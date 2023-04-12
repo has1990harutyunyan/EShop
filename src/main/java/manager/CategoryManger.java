@@ -9,12 +9,13 @@ import java.util.List;
 
 public class CategoryManger {
 
-    private Connection connection = DBConnectionProvider.getInstance().getConnection();
+    private final Connection CONNECTION = DBConnectionProvider.getInstance().getConnection();
+
 
     public Category getCategoryById(int id) {
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT * from category WHERE id = ?");
+            preparedStatement = CONNECTION.prepareStatement("SELECT * from category WHERE id = ?");
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -34,7 +35,7 @@ public class CategoryManger {
 
     public void save(Category category) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO category (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement("INSERT INTO category (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, category.getName());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -49,7 +50,7 @@ public class CategoryManger {
 
     public void update(Category category) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE category set name = ? WHERE id = ?");
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement("UPDATE category set name = ? WHERE id = ?");
             preparedStatement.setString(1, category.getName());
             preparedStatement.setInt(2, category.getId());
             preparedStatement.executeUpdate();
@@ -61,7 +62,7 @@ public class CategoryManger {
 
     public List<Category> getAll() {
         List<Category> categoryList = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = CONNECTION.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * from category;");
             while (resultSet.next()) {
                 Category category = new Category();
@@ -78,7 +79,7 @@ public class CategoryManger {
 
     public void deleteById(int id) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE from category WHERE id = ?");
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement("DELETE from category WHERE id = ?");
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
